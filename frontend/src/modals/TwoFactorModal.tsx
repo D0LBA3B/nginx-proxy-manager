@@ -11,6 +11,7 @@ import {
 	start2FASetup,
 } from "src/api/backend";
 import { Button } from "src/components";
+import { DirtyTracker, useStaticBackdropHint } from "src/hooks";
 import { T } from "src/locale";
 import { validateString } from "src/modules/Validations";
 
@@ -32,6 +33,7 @@ const TwoFactorModal = EasyModal.create(({ id, visible, remove }: Props) => {
 	const [setupData, setSetupData] = useState<{ secret: string; otpauthUrl: string } | null>(null);
 	const [backupCodes, setBackupCodes] = useState<string[]>([]);
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const dirtyRef = useStaticBackdropHint(visible, remove);
 
 	const loadStatus = useCallback(async () => {
 		try {
@@ -188,6 +190,7 @@ const TwoFactorModal = EasyModal.create(({ id, visible, remove }: Props) => {
 					<Formik initialValues={{ code: "" }} onSubmit={handleVerify}>
 						{() => (
 							<Form>
+								<DirtyTracker dirtyRef={dirtyRef} />
 								<Field name="code" validate={validateString(6, 6)}>
 									{({ field, form }: any) => (
 										<label className="mb-3 d-block">
@@ -258,6 +261,7 @@ const TwoFactorModal = EasyModal.create(({ id, visible, remove }: Props) => {
 					<Formik initialValues={{ code: "" }} onSubmit={handleDisable}>
 						{() => (
 							<Form>
+								<DirtyTracker dirtyRef={dirtyRef} />
 								<Field name="code" validate={validateString(6, 6)}>
 									{({ field, form }: any) => (
 										<label className="mb-3 d-block">
@@ -306,6 +310,7 @@ const TwoFactorModal = EasyModal.create(({ id, visible, remove }: Props) => {
 					<Formik initialValues={{ code: "" }} onSubmit={handleRegenerateBackup}>
 						{() => (
 							<Form>
+								<DirtyTracker dirtyRef={dirtyRef} />
 								<Field name="code" validate={validateString(6, 6)}>
 									{({ field, form }: any) => (
 										<label className="mb-3 d-block">
@@ -349,7 +354,7 @@ const TwoFactorModal = EasyModal.create(({ id, visible, remove }: Props) => {
 	};
 
 	return (
-		<Modal show={visible} onHide={remove}>
+		<Modal show={visible} onHide={remove} backdrop="static">
 			<Modal.Header closeButton>
 				<Modal.Title>
 					<T id="2fa.title" />

@@ -7,6 +7,7 @@ import { Alert } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import { createCertificate, testHttpCertificate } from "src/api/backend";
 import { Button, DomainNamesField } from "src/components";
+import { DirtyTracker, useStaticBackdropHint } from "src/hooks";
 import { T } from "src/locale";
 import { showObjectSuccess } from "src/notifications";
 
@@ -19,6 +20,7 @@ const HTTPCertificateModal = EasyModal.create(({ visible, remove }: InnerModalPr
 	const [errorMsg, setErrorMsg] = useState<ReactNode | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [domains, setDomains] = useState([] as string[]);
+	const dirtyRef = useStaticBackdropHint(visible, remove);
 	const [isTesting, setIsTesting] = useState(false);
 	const [testResults, setTestResults] = useState(null as Record<string, string> | null);
 
@@ -109,7 +111,7 @@ const HTTPCertificateModal = EasyModal.create(({ visible, remove }: InnerModalPr
 	};
 
 	return (
-		<Modal show={visible} onHide={remove}>
+		<Modal show={visible} onHide={remove} backdrop="static">
 			<Formik
 				initialValues={
 					{
@@ -124,6 +126,7 @@ const HTTPCertificateModal = EasyModal.create(({ visible, remove }: InnerModalPr
 			>
 				{() => (
 					<Form>
+						<DirtyTracker dirtyRef={dirtyRef} />
 						<Modal.Header closeButton>
 							<Modal.Title>
 								<T id="object.add" tData={{ object: "lets-encrypt-via-http" }} />

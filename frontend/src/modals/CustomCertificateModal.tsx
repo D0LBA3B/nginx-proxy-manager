@@ -7,6 +7,7 @@ import { Alert } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import { type Certificate, createCertificate, uploadCertificate, validateCertificate } from "src/api/backend";
 import { Button } from "src/components";
+import { DirtyTracker, useStaticBackdropHint } from "src/hooks";
 import { T } from "src/locale";
 import { validateString } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
@@ -19,6 +20,7 @@ const CustomCertificateModal = EasyModal.create(({ visible, remove }: InnerModal
 	const queryClient = useQueryClient();
 	const [errorMsg, setErrorMsg] = useState<ReactNode | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const dirtyRef = useStaticBackdropHint(visible, remove);
 
 	const onSubmit = async (values: any, { setSubmitting }: any) => {
 		if (isSubmitting) return;
@@ -57,7 +59,7 @@ const CustomCertificateModal = EasyModal.create(({ visible, remove }: InnerModal
 	};
 
 	return (
-		<Modal show={visible} onHide={remove}>
+		<Modal show={visible} onHide={remove} backdrop="static">
 			<Formik
 				initialValues={
 					{
@@ -72,6 +74,7 @@ const CustomCertificateModal = EasyModal.create(({ visible, remove }: InnerModal
 			>
 				{() => (
 					<Form>
+						<DirtyTracker dirtyRef={dirtyRef} />
 						<Modal.Header closeButton>
 							<Modal.Title>
 								<T id="object.add" tData={{ object: "certificates.custom" }} />

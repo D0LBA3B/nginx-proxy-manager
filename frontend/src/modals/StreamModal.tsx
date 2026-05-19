@@ -4,7 +4,7 @@ import { type ReactNode, useState } from "react";
 import { Alert } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import { Button, Loading, SSLCertificateField, SSLOptionsFields } from "src/components";
-import { useSetStream, useStream } from "src/hooks";
+import { DirtyTracker, useSetStream, useStaticBackdropHint, useStream } from "src/hooks";
 import { intl, T } from "src/locale";
 import { validateNumber, validateString } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
@@ -21,6 +21,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove }: Props) => {
 	const { mutate: setStream } = useSetStream();
 	const [errorMsg, setErrorMsg] = useState<ReactNode | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const dirtyRef = useStaticBackdropHint(visible, remove);
 
 	const onSubmit = async (values: any, { setSubmitting }: any) => {
 		if (isSubmitting) return;
@@ -46,7 +47,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove }: Props) => {
 	};
 
 	return (
-		<Modal show={visible} onHide={remove}>
+		<Modal show={visible} onHide={remove} backdrop="static">
 			{!isLoading && error && (
 				<Alert variant="danger" className="m-3">
 					{error?.message || "Unknown error"}
@@ -70,6 +71,7 @@ const StreamModal = EasyModal.create(({ id, visible, remove }: Props) => {
 				>
 					{({ setFieldValue }: any) => (
 						<Form>
+							<DirtyTracker dirtyRef={dirtyRef} />
 							<Modal.Header closeButton>
 								<Modal.Title>
 									<T id={data?.id ? "object.edit" : "object.add"} tData={{ object: "stream" }} />

@@ -6,6 +6,7 @@ import { Alert } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import { createCertificate } from "src/api/backend";
 import { Button, DNSProviderFields, DomainNamesField } from "src/components";
+import { DirtyTracker, useStaticBackdropHint } from "src/hooks";
 import { T } from "src/locale";
 import { showObjectSuccess } from "src/notifications";
 
@@ -17,6 +18,7 @@ const DNSCertificateModal = EasyModal.create(({ visible, remove }: InnerModalPro
 	const queryClient = useQueryClient();
 	const [errorMsg, setErrorMsg] = useState<ReactNode | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const dirtyRef = useStaticBackdropHint(visible, remove);
 
 	const onSubmit = async (values: any, { setSubmitting }: any) => {
 		if (isSubmitting) return;
@@ -36,7 +38,7 @@ const DNSCertificateModal = EasyModal.create(({ visible, remove }: InnerModalPro
 	};
 
 	return (
-		<Modal show={visible} onHide={remove}>
+		<Modal show={visible} onHide={remove} backdrop="static">
 			<Formik
 				initialValues={
 					{
@@ -52,6 +54,7 @@ const DNSCertificateModal = EasyModal.create(({ visible, remove }: InnerModalPro
 			>
 				{() => (
 					<Form>
+						<DirtyTracker dirtyRef={dirtyRef} />
 						<Modal.Header closeButton>
 							<Modal.Title>
 								<T id="object.add" tData={{ object: "lets-encrypt-via-dns" }} />

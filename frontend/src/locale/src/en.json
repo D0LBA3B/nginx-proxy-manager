@@ -518,6 +518,9 @@
 	"notification.success": {
 		"defaultMessage": "Success"
 	},
+	"modal.use-close-button": {
+		"defaultMessage": "Use the close button to dismiss this dialog."
+	},
 	"object.actions-title": {
 		"defaultMessage": "{object} #{id}"
 	},

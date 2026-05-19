@@ -16,7 +16,7 @@ import {
 	SSLCertificateField,
 	SSLOptionsFields,
 } from "src/components";
-import { useProxyHost, useSetProxyHost, useUser } from "src/hooks";
+import { DirtyTracker, useProxyHost, useSetProxyHost, useStaticBackdropHint, useUser } from "src/hooks";
 import { T } from "src/locale";
 import { MANAGE, PROXY_HOSTS } from "src/modules/Permissions";
 import { validateNumber, validateString } from "src/modules/Validations";
@@ -35,6 +35,7 @@ const ProxyHostModal = EasyModal.create(({ id, visible, remove }: Props) => {
 	const { mutate: setProxyHost } = useSetProxyHost();
 	const [errorMsg, setErrorMsg] = useState<ReactNode | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const dirtyRef = useStaticBackdropHint(visible, remove);
 
 	const onSubmit = async (values: any, { setSubmitting }: any) => {
 		if (isSubmitting) return;
@@ -60,7 +61,7 @@ const ProxyHostModal = EasyModal.create(({ id, visible, remove }: Props) => {
 	};
 
 	return (
-		<Modal show={visible} onHide={remove}>
+		<Modal show={visible} onHide={remove} backdrop="static">
 			{!isLoading && (error || userError) && (
 				<Alert variant="danger" className="m-3">
 					{error?.message || userError?.message || "Unknown error"}
@@ -98,6 +99,7 @@ const ProxyHostModal = EasyModal.create(({ id, visible, remove }: Props) => {
 				>
 					{() => (
 						<Form>
+							<DirtyTracker dirtyRef={dirtyRef} />
 							<Modal.Header closeButton>
 								<Modal.Title>
 									<T id={data?.id ? "object.edit" : "object.add"} tData={{ object: "proxy-host" }} />

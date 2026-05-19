@@ -6,6 +6,7 @@ import { Alert } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import { updateAuth } from "src/api/backend";
 import { Button } from "src/components";
+import { DirtyTracker, useStaticBackdropHint } from "src/hooks";
 import { intl, T } from "src/locale";
 import { validateString } from "src/modules/Validations";
 
@@ -20,6 +21,7 @@ const SetPasswordModal = EasyModal.create(({ id, visible, remove }: Props) => {
 	const [error, setError] = useState<ReactNode | null>(null);
 	const [showPassword, setShowPassword] = useState(false);
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const dirtyRef = useStaticBackdropHint(visible, remove);
 
 	const onSubmit = async (values: any, { setSubmitting }: any) => {
 		if (isSubmitting) return;
@@ -35,7 +37,7 @@ const SetPasswordModal = EasyModal.create(({ id, visible, remove }: Props) => {
 	};
 
 	return (
-		<Modal show={visible} onHide={remove}>
+		<Modal show={visible} onHide={remove} backdrop="static">
 			<Formik
 				initialValues={
 					{
@@ -46,6 +48,7 @@ const SetPasswordModal = EasyModal.create(({ id, visible, remove }: Props) => {
 			>
 				{() => (
 					<Form>
+						<DirtyTracker dirtyRef={dirtyRef} />
 						<Modal.Header closeButton>
 							<Modal.Title>
 								<T id="user.set-password" />

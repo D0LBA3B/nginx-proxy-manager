@@ -13,7 +13,7 @@ import {
 	SSLCertificateField,
 	SSLOptionsFields,
 } from "src/components";
-import { useRedirectionHost, useSetRedirectionHost } from "src/hooks";
+import { DirtyTracker, useRedirectionHost, useSetRedirectionHost, useStaticBackdropHint } from "src/hooks";
 import { T } from "src/locale";
 import { validateString } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
@@ -30,6 +30,7 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove }: Props) =
 	const { mutate: setRedirectionHost } = useSetRedirectionHost();
 	const [errorMsg, setErrorMsg] = useState<ReactNode | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const dirtyRef = useStaticBackdropHint(visible, remove);
 
 	const onSubmit = async (values: any, { setSubmitting }: any) => {
 		if (isSubmitting) return;
@@ -55,7 +56,7 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove }: Props) =
 	};
 
 	return (
-		<Modal show={visible} onHide={remove}>
+		<Modal show={visible} onHide={remove} backdrop="static">
 			{!isLoading && error && (
 				<Alert variant="danger" className="m-3">
 					{error?.message || "Unknown error"}
@@ -88,6 +89,7 @@ const RedirectionHostModal = EasyModal.create(({ id, visible, remove }: Props) =
 				>
 					{() => (
 						<Form>
+							<DirtyTracker dirtyRef={dirtyRef} />
 							<Modal.Header closeButton>
 								<Modal.Title>
 									<T
